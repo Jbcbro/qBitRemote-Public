@@ -8,11 +8,11 @@
     <true/>
     <key>EXUpdatesLaunchWaitMs</key>
     <integer>0</integer>
+    <key>EXUpdatesReleaseChannel</key>
+    <string>default</string>
     <key>EXUpdatesSDKVersion</key>
     <string>42.0.0</string>
     <key>EXUpdatesURL</key>
-    <string>https://exp.host/@jbcbros/qBitRemote</string>
-    <key>EXUpdatesReleaseChannel</key>
-    <string>default</string>
+    <string>https://exp.host/@anonymous/qBitRemote</string>
   </dict>
 </plist>
