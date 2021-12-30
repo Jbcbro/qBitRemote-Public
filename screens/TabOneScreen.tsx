@@ -126,9 +126,12 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
 
       <Appbar.Header theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <View style={{backgroundColor: 'transparent'}}>
-            <Text style={{ marginLeft: 20, color: 'white' }}>↑{formatBytes(clinetInfo.up_info_speed)}/s</Text>
+            <Text style={{ marginLeft: 20, color: 'white' }}>↑{clinetInfo == null || undefined || NaN  || 'NaN Undefined' ? "0" : formatBytes(clinetInfo.up_info_speed)}/s</Text>
             
-            <Text style={{ marginLeft: 20, color: 'white' }}>↓{formatBytes(clinetInfo.dl_info_speed)}/s</Text>
+            <Text style={{ marginLeft: 20, color: 'white' }}>↓{clinetInfo == null || undefined || NaN  || 'NaN Undefined' ? "0" : formatBytes(clinetInfo.dl_info_speed)}/s</Text>
+
+
+
 </View>
         <ContentTitle title={'Remote'} style={{ color: 'white' }} />
         <Appbar.Action icon="plus" onPress={_handleMore} />
