@@ -80,7 +80,7 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="TabOneScreen"
         component={TabOneScreen}
-        options={{headerShown: false}}
+        options={{headerShown: false,  headerTitle: 'Remote',}}
       />
       <TabOneStack.Screen
         name="UploadScreen"
