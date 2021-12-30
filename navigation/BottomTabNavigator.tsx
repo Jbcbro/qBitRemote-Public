@@ -6,6 +6,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import { useNavigation } from '@react-navigation/native';
 import React, { useState, useEffect, useContext  } from 'react';
 import AppContext from '../global/AppContext'
@@ -65,6 +66,9 @@ const TabOneStack = createStackNavigator<TabOneParamList>();
 
 
 
+
+
+
 function TabOneNavigator() {
 
   const userSettings:any = useContext(AppContext);
@@ -76,19 +80,7 @@ function TabOneNavigator() {
       <TabOneStack.Screen
         name="TabOneScreen"
         component={TabOneScreen}
-        options={{
-          headerTitle: userSettings.nickname,
-          headerRight: () => (
-            <Text onPress={() => navigation.navigate('UploadScreen')} style={{ fontSize: 32, marginRight: 20 }}>+</Text>
-          ),
-          headerLeft: () => (
-            <View>
-            <Text style={{ marginLeft: 20 }}>↑{Math.floor(Math.random() * 100)} KB/s</Text>
-            
-            <Text style={{ marginLeft: 20 }}>↓{Math.floor(Math.random() * 100)} KB/s</Text>
-</View>
-          ),
-        }}
+        options={{headerShown: false}}
       />
       <TabOneStack.Screen
         name="UploadScreen"

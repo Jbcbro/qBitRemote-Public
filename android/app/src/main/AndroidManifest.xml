@@ -21,7 +21,7 @@
         <category android:name="android.intent.category.DEFAULT"/>
         <category android:name="android.intent.category.BROWSABLE"/>
         <data android:scheme="qbitremote"/>
-        <data android:scheme="com.jbcbros.qBitRemote"/>
+        <data android:scheme="com.jbcbros.qbitremote"/>
       </intent-filter>
     </activity>
     <activity android:name="com.facebook.react.devsupport.DevSettingsActivity"/>

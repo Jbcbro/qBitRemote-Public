@@ -205,6 +205,8 @@ console.log(isSwitchOn)
 </View>
 
 
+
+
 <Text style={{textAlign: 'center'}}>Reguest are sent as "SSL+HOST+':'+PORT"/</Text>
 <Text style={{textAlign: 'center'}}>For relative path add after port without '/' at end</Text>
 
