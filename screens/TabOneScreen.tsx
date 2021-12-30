@@ -1,37 +1,51 @@
-import React, { useState, useEffect, useContext  } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import AppContext from '../global/AppContext'
 
 import { Ionicons } from '@expo/vector-icons';
 
-import { StyleSheet, FlatList, TouchableOpacity, TouchableNativeFeedback } from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity, ColorSchemeName, TouchableNativeFeedback, Button } from 'react-native';
+import { DefaultTheme, DarkTheme } from '@react-navigation/native';
 
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
-import { ProgressBar, Colors, Headline } from 'react-native-paper';
+import { ProgressBar, Colors, Headline, Appbar } from 'react-native-paper';
 import { Item } from 'react-native-paper/lib/typescript/components/Drawer/Drawer';
 
 
 
-export default function TabOneScreen({
-  navigation,
-}) {
+export default function TabOneScreen({ navigation, colorScheme }: { navigation: any, colorScheme: ColorSchemeName }) {
   const [torrents, setTorrents] = useState([]);
-  const userSettings:any = useContext(AppContext);
+  const [clinetInfo, setClientInfo] = useState([]);
+
+  const userSettings: any = useContext(AppContext);
 
 
   const loginQbit = async () => {
- 
+
     var requestOptions = {
       method: 'GET',
       redirect: 'follow'
     };
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/auth/login?username="+userSettings.username+"&password="+userSettings.password+"", requestOptions)
+    fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/auth/login?username=" + userSettings.username + "&password=" + userSettings.password + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result)).then(() => getTorrentsQbit())
       .catch(error => console.log('error', error));
   }
 
 
+  const getTorrentsQbitInfo = async () => {
+    console.log(clinetInfo);
+    var myHeaders = new Headers();
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+    await fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/transfer/info", requestOptions)
+      .then(response => response.json())
+      .then(result => setClientInfo(result))
+      .catch(error => console.log('error', error));
+  }
 
   const getTorrentsQbit = async () => {
     var myHeaders = new Headers();
@@ -41,8 +55,9 @@ export default function TabOneScreen({
       headers: myHeaders,
     };
 
-
-    await fetch(userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/torrents/info?sort=added_on&reverse=true", requestOptions)
+    getTorrentsQbitInfo;
+    
+    await fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/torrents/info?sort=added_on&reverse=true", requestOptions)
       .then(response => response.json())
       .then(result => setTorrents(result)).then(result => console.log('Recicved')).then(() => setRefreshed(false))
       .catch(error => console.log('error', error));
@@ -51,13 +66,17 @@ export default function TabOneScreen({
 
   React.useEffect(() => {
 
-      loginQbit();
-  
-    const timer = setInterval(()=> getTorrentsQbit(), 9000)
+    loginQbit();
+
+    const timer = setInterval(() => getTorrentsQbit(), 9000)
+
+    const timerInfo = setInterval(() => getTorrentsQbitInfo(), 9000)
+
 
     const unsubscribe = navigation.addListener('focus', () => {
 
       getTorrentsQbit()
+      getTorrentsQbitInfo()
     });
 
     return unsubscribe;
@@ -77,10 +96,43 @@ export default function TabOneScreen({
     getTorrentsQbit();
 
   }
+
+  function formatBytes(bytes, decimals = 2) {
+    if (bytes === 0) return '0 B';
+    if (bytes === NaN) return '0 B';
+
+    const k = 1024;
+    const dm = decimals < 0 ? 0 : decimals;
+    const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
+
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
+  }
+
+  const ContentTitle = ({ title, style }) => (
+    <Appbar.Content
+      title={<Text style={style}> {title} </Text>}
+      style={{ alignItems: 'center' }}
+    />
+  );
+  const _handleMore = () => navigation.navigate('UploadScreen');
+
+  
   return (
 
     <View style={styles.container}>
 
+
+      <Appbar.Header theme={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <View style={{backgroundColor: 'transparent'}}>
+            <Text style={{ marginLeft: 20, color: 'white' }}>↑{formatBytes(clinetInfo.up_info_speed)}/s</Text>
+            
+            <Text style={{ marginLeft: 20, color: 'white' }}>↓{formatBytes(clinetInfo.dl_info_speed)}/s</Text>
+</View>
+        <ContentTitle title={'Remote'} style={{ color: 'white' }} />
+        <Appbar.Action icon="plus" onPress={_handleMore} />
+      </Appbar.Header>
 
 
       <FlatList
@@ -118,7 +170,9 @@ export default function TabOneScreen({
                 return <Text style={styles.markdown}>{item.state}</Text>;
               })()}
 
-              <Text style={styles.markdown}>↑ {item.uploaded} KB ↓ {item.downloaded} KB</Text>
+              <Text style={styles.markdown}>↑ {formatBytes(item.uploaded)} ↓ {
+
+                formatBytes(item.downloaded)}</Text>
               <Text style={styles.markdown}>{Math.round(item.ratio * 100) / 100}</Text>
             </View>
 
@@ -146,8 +200,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     marginLeft: 25,
     marginRight: 25,
-
-
   },
   markdown: {
     textAlign: 'center',
