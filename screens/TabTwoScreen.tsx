@@ -62,7 +62,7 @@ alert('Settings saved')
   }
 });
 
-xhr.open("GET", "http://"+host+":"+port+"/api/v2/auth/login?username="+username+"&password="+password+"");
+xhr.open("GET", (userSettings.ssl == 'true' ? 'https://':'http://')+host+":"+port+"/api/v2/auth/login?username="+username+"&password="+password+"");
 xhr.send();
 
 

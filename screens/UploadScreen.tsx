@@ -1,9 +1,10 @@
 import { StackScreenProps } from '@react-navigation/stack';
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useRef } from 'react'
 import AppContext from '../global/AppContext'
 
 import { Text, View } from '../components/Themed';
 import EditScreenInfo from '../components/EditScreenInfo';
+import {Picker} from '@react-native-picker/picker';
 
 import { StyleSheet, TouchableOpacity, TextInput, Clipboard, Button, ScrollView } from 'react-native';
 import * as DocumentPicker from 'expo-document-picker';
@@ -16,6 +17,9 @@ export default function UploadScreen({
 }) {
   const userSettings:any = useContext(AppContext);
 
+  const [selectedCat, setSelectedCat] = useState("uncategorized");
+  const [allCat, setAllCat] = useState([]);
+  const [docPicked, setDocPicked] = useState();
 
   const [text, onChangeText] = React.useState("");
 
@@ -26,13 +30,22 @@ export default function UploadScreen({
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/auth/login?username="+userSettings.username+"&password="+userSettings.password+"", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+userSettings.host+":"+userSettings.port+"/api/v2/auth/login?username="+userSettings.username+"&password="+userSettings.password+"", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
   }
 
 
+  const pickerRef = useRef();
+
+  function open() {
+    pickerRef.current.focus();
+  }
+  
+  function close() {
+    pickerRef.current.blur();
+  }
 
   const addTorrent = async () => {
     const texts = await Clipboard.getString()
@@ -41,7 +54,7 @@ export default function UploadScreen({
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/auth/login?username="+userSettings.username+"&password="+userSettings.password+"", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+userSettings.host+":"+userSettings.port+"/api/v2/auth/login?username="+userSettings.username+"&password="+userSettings.password+"", requestOptions)
       .then(response => response.text())
       .catch(error => console.log('error', error));
 
@@ -50,13 +63,16 @@ export default function UploadScreen({
 
     var formdata = new FormData();
     formdata.append("urls", texts);
+    if(selectedCat != "uncategorized") {
+      formdata.append("category", selectedCat);
+  }
 
     var requestOptions = {
       method: 'POST',
       body: formdata,
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/torrents/add", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+userSettings.host+":"+userSettings.port+"/api/v2/torrents/add", requestOptions)
       .then(response => response.text())
       .then(result => check(result))
       .catch(error => console.log('error', error));
@@ -69,32 +85,71 @@ export default function UploadScreen({
     }
   }
 
+const getCategory = async () => {
+ 
+    var myHeaders = new Headers();
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+    };
+    await fetch((userSettings.ssl == 'true' ? 'https://':'http://') + userSettings.host + ":" + userSettings.port + "/api/v2/sync/maindata", requestOptions)
+      .then(response => response.json())
+      .then(result => setAllCat(result.categories))
+      .catch(error => console.log('error', error));
+
+      console.log(allCat)
+
+      Object.keys(allCat).map(function(key) {
+        console.log(allCat[key].name);
+      })
+      
+      
+    
+}
+
+const sendTorrent = async () => {
+
+
+
+  var data = new FormData();
+  data.append("torrents", docPicked, docPicked.uri);
+  if(selectedCat != "uncategorized") {
+      data.append("category", selectedCat);
+  }
+
+
+
+  var xhr = new XMLHttpRequest();
+  xhr.withCredentials = true;
+
+  xhr.addEventListener("readystatechange", function () {
+    if (this.readyState === 4) {
+      console.log(this.responseText);
+      check(this.responseText);
+    }
+  });
+
+  xhr.open("POST", (userSettings.ssl == 'true' ? 'https://':'http://')+userSettings.host+":"+userSettings.port+"/api/v2/torrents/add");
+
+  xhr.send(data);
+
+}
+
   const _pickDocument = async () => {
     let result = await DocumentPicker.getDocumentAsync({});
    
-    console.log(result);
-    var data = new FormData();
-    data.append("torrents", result, result.uri);
-
-    var xhr = new XMLHttpRequest();
-    xhr.withCredentials = true;
-
-    xhr.addEventListener("readystatechange", function () {
-      if (this.readyState === 4) {
-        console.log(this.responseText);
-        check(this.responseText);
-      }
-    });
-
-    xhr.open("POST", userSettings.ssl == 'true' ? 'https://':'http://'+userSettings.host+":"+userSettings.port+"/api/v2/torrents/add");
-
-    xhr.send(data);
+    setDocPicked(result);
+    
   }
 
+  React.useEffect(() => {
+  getCategory();
+  }, [navigation]);
   return (
     <ScrollView style={styles.container}>
-      
-
+   
+      <Text style={styles.info}>SELECT FILE</Text>
       <View darkColor="#1c1c1c" style={styles.cards}>
         <Button
           title='Add Torrent (Clipboard)'
@@ -109,29 +164,42 @@ export default function UploadScreen({
           onPress={() => _pickDocument()}
         />
 
-
-
-
-
-
-
-  
-
-
       </View>
 
 
  
 
+      <Text style={styles.info}>SET CATEGORY </Text>
+      <View darkColor="#1c1c1c" style={styles.cards}>
+
+<Picker  
+ selectedValue={selectedCat}
+  onValueChange={(itemValue, itemIndex) =>
+    setSelectedCat(itemValue)
+  }>
+       <Picker.Item label="Uncategorized" value="uncategorized"></Picker.Item>
+ {
+  Object.keys(allCat).map(function(key) {
+    return (
+      <Picker.Item label={allCat[key].name} value={allCat[key].name}></Picker.Item>
+    )
+ 
+  })
+
+ }
+
+</Picker>
 
 
+<Button
+          title='Send Torrent'
+          onPress={() => sendTorrent()}
+        />
+        
 
-
-
-
+      </View>
 
   
-
 
 
 

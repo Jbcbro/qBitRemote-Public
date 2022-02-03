@@ -29,7 +29,7 @@ export default function InfoScreen({ route, navigation }) {
               redirect: 'follow'
             };
 
-            fetch(userSettings.ssl == 'true' ? 'https://':'http://'+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/delete?hashes=" + data.hash + "&deleteFiles=true", requestOptions)
+            fetch((userSettings.ssl == 'true' ? 'https://':'http://')+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/delete?hashes=" + data.hash + "&deleteFiles=true", requestOptions)
               .then(response => response.text())
               .then(result => console.log(result)).then(() => navigation.goBack())
               .catch(error => console.log('error', error));
@@ -48,7 +48,7 @@ export default function InfoScreen({ route, navigation }) {
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/pause?hashes=" + data.hash + "", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/pause?hashes=" + data.hash + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -61,7 +61,7 @@ export default function InfoScreen({ route, navigation }) {
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/recheck?hashes=" + data.hash + "", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/recheck?hashes=" + data.hash + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -74,7 +74,7 @@ export default function InfoScreen({ route, navigation }) {
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/resume?hashes=" + data.hash + "", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/resume?hashes=" + data.hash + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result))
       .catch(error => console.log('error', error));
@@ -87,7 +87,7 @@ export default function InfoScreen({ route, navigation }) {
       redirect: 'follow'
     };
 
-    fetch(userSettings.ssl == 'true' ? 'https://':'http://'+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/resume?hashes=" + data.hash + "", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://')+ userSettings.host + ":" + userSettings.port + "/api/v2/torrents/resume?hashes=" + data.hash + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result)).then(() => navigation.goBack())
       .catch(error => console.log('error', error));
@@ -158,6 +158,12 @@ export default function InfoScreen({ route, navigation }) {
         <View darkColor="rgba(255,255,255,0)" style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Text style={styles.getStartedText}>Seeds</Text>
           <Text style={styles.data} >{data.num_complete}</Text>
+        </View>
+
+        <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+        <View darkColor="rgba(255,255,255,0)" style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text style={styles.getStartedText}>Category</Text>
+          <Text style={styles.data} >{data.category}</Text>
         </View>
 
       </View>

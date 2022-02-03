@@ -26,7 +26,7 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
       method: 'GET',
       redirect: 'follow'
     };
-    fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/auth/login?username=" + userSettings.username + "&password=" + userSettings.password + "", requestOptions)
+    fetch((userSettings.ssl == 'true' ? 'https://':'http://') + userSettings.host + ":" + userSettings.port + "/api/v2/auth/login?username=" + userSettings.username + "&password=" + userSettings.password + "", requestOptions)
       .then(response => response.text())
       .then(result => console.log(result)).then(() => getTorrentsQbit())
       .catch(error => console.log('error', error));
@@ -41,7 +41,7 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
       method: 'GET',
       headers: myHeaders,
     };
-    await fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/transfer/info", requestOptions)
+    await fetch((userSettings.ssl == 'true' ? 'https://':'http://') + userSettings.host + ":" + userSettings.port + "/api/v2/transfer/info", requestOptions)
       .then(response => response.json())
       .then(result => setClientInfo(result))
       .catch(error => console.log('error', error));
@@ -57,7 +57,7 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
 
     getTorrentsQbitInfo;
     
-    await fetch(userSettings.ssl == 'true' ? 'https://' : 'http://' + userSettings.host + ":" + userSettings.port + "/api/v2/torrents/info?sort=added_on&reverse=true", requestOptions)
+    await fetch((userSettings.ssl == 'true' ? 'https://':'http://') + userSettings.host + ":" + userSettings.port + "/api/v2/torrents/info?sort=added_on&reverse=true", requestOptions)
       .then(response => response.json())
       .then(result => setTorrents(result)).then(result => console.log('Recicved')).then(() => setRefreshed(false))
       .catch(error => console.log('error', error));
