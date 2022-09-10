@@ -47,6 +47,10 @@ const testLogin = () => {
 save('ssl', isSwitchOn.toString());
 userSettings.setSsl(isSwitchOn.toString());
 
+var data = new FormData();
+data.append("username", username);
+data.append("password", password);
+
 var xhr = new XMLHttpRequest();
 xhr.withCredentials = true;
 
@@ -73,9 +77,9 @@ alert('Settings saved')
     }
   }
 });
-console.log((isSwitchOn ? 'https://':'http://')+host+":"+port+"/api/v2/auth/login?username="+username+"&password="+password+"")
-xhr.open("GET",(isSwitchOn ? 'https://':'http://')+host+":"+port+"/api/v2/auth/login?username="+username+"&password="+password+"");
-xhr.send();
+console.log((isSwitchOn ? 'https://':'http://')+host+":"+port+"/api/v2/auth/login")
+xhr.open("POST",(isSwitchOn ? 'https://':'http://')+host+":"+port+"/api/v2/auth/login");
+xhr.send(data);
 
 console.log(isSwitchOn)
 

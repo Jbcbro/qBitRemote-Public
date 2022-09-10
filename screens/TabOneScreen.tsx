@@ -21,10 +21,14 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
 
 
   const loginQbit = async () => {
-
+    var formdata = new FormData();
+    formdata.append("username", "jbcbro");
+    formdata.append("password", "jonas1209");
+    
     var requestOptions = {
-      method: 'GET',
-      redirect: 'follow'
+      method: 'POST',
+      redirect: 'follow',
+      body: formdata,
     };
     fetch((userSettings.ssl == 'true' ? 'https://':'http://') + userSettings.host + ":" + userSettings.port + "/api/v2/auth/login?username=" + userSettings.username + "&password=" + userSettings.password + "", requestOptions)
       .then(response => response.text())
@@ -68,9 +72,9 @@ export default function TabOneScreen({ navigation, colorScheme }: { navigation: 
 
     loginQbit();
 
-    const timer = setInterval(() => getTorrentsQbit(), 9000)
+    const timer = setInterval(() => getTorrentsQbit(), 90000)
 
-    const timerInfo = setInterval(() => getTorrentsQbitInfo(), 9000)
+    const timerInfo = setInterval(() => getTorrentsQbitInfo(), 90000)
 
 
     const unsubscribe = navigation.addListener('focus', () => {
