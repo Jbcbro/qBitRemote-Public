@@ -1,6 +1,7 @@
 # qBitRemote
  A iOS & Android client for qbittorrent
- 
+ **Authentication error has been fixed**
+
  ![Preview](https://i.imgur.com/FHlFpTL.png)
 
  
