@@ -21,7 +21,7 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.jbcbros.qBitRemote"
+      "bundleIdentifier": "com.jbcbros2.qBitRemote"
     },
     "android": {
       "adaptiveIcon": {
